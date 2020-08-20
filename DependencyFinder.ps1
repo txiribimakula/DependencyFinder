@@ -14,9 +14,9 @@ function ProjectDependencies {
     foreach ($projectReference in $projectReferenceNodes) {
         $projectReferenceValue = $projectReference.Include;
         if($projectReferenceValue -match $criteria) {
-            Write-Host "`t" $projectReference.Include -ForegroundColor Black -BackgroundColor Yellow
+            Write-Host $projectReference.Include -ForegroundColor Black -BackgroundColor Yellow
         } else {
-            Write-Host "`t" $projectReference.Include
+            Write-Host $projectReference.Include
         }
     }
 }
