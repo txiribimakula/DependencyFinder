@@ -22,15 +22,15 @@ function ProjectDependencies {
     }
 }
 
-$filePath = Read-Host 'Full path'
-$criteria = Read-Host 'Criteria'
+function SolutionDependencies {
+    param (
+        $solutionFilePath,
+        $criteria
+    )
+    
+    $solutionFolderPath = Split-Path $solutionFilePath
 
-$fileExtension = [System.IO.Path]::GetExtension($filePath)
-
-if ($fileExtension -eq '.sln') {
-    $solutionFolderPath = Split-Path $filePath
-
-    Get-Content $filePath |
+    Get-Content $solutionFilePath |
     Select-String 'Project\(' |
     ForEach-Object {
         $projectParts = $_ -Split '[,=]' | ForEach-Object { $_.Trim('[ "{}]') };
@@ -42,6 +42,17 @@ if ($fileExtension -eq '.sln') {
         ProjectDependencies $projectFilePath $criteria
     }
     Write-Host ''
+}
+
+# MAIN PROGRAM
+
+$filePath = Read-Host 'Full path'
+$criteria = Read-Host 'Criteria'
+
+$fileExtension = [System.IO.Path]::GetExtension($filePath)
+
+if ($fileExtension -eq '.sln') {
+    SolutionDependencies $filePath $criteria
 }
 elseif ($fileExtension -eq '.csproj') {
     ProjectDependencies $filePath $criteria
