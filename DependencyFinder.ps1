@@ -35,7 +35,7 @@ function SolutionDependencies {
     ForEach-Object {
         $projectParts = $_ -Split '[,=]' | ForEach-Object { $_.Trim('[ "{}]') };
         Write-Host ''
-        Write-Host $projectParts[1] -ForegroundColor Green
+        Write-Host $projectParts[1] -ForegroundColor Blue
     
         $projectFilePath = $solutionFolderPath + '\' + $projectParts[2]
         
