@@ -46,14 +46,22 @@ function SolutionDependencies {
 
 # MAIN PROGRAM
 
-$filePath = Read-Host 'Full path'
+do {
+    $filePath = Read-Host 'Full path (.sln/.csproj)'
+    $fileExtension = [System.IO.Path]::GetExtension($filePath)
+    $isSLN = $fileExtension -eq '.sln'
+    $isCSPROJ = $fileExtension -eq '.csproj'
+    if (-not $isSLN -and -not $isCSPROJ) {
+        Write-Host 'Extension is not compatible.' -ForegroundColor Red
+    }
+} while (-not $isSLN -and -not $isCSPROJ)
+
+
 $criteria = Read-Host 'Criteria'
 
-$fileExtension = [System.IO.Path]::GetExtension($filePath)
-
-if ($fileExtension -eq '.sln') {
+if ($isSLN) {
     SolutionDependencies $filePath $criteria
 }
-elseif ($fileExtension -eq '.csproj') {
+elseif ($isCSPROJ) {
     ProjectDependencies $filePath $criteria
 }
