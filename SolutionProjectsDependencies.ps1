@@ -1,6 +1,3 @@
-
-
-
 $solutionFilePath = Read-Host 'Full path'
 
 $solutionFolderPath = Split-Path $solutionFilePath
