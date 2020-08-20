@@ -11,7 +11,7 @@ function ProjectDependencies {
     $projectReferenceNodes = $projectXml.SelectNodes('//msb:ProjectReference', $ns)
 
     foreach ($projectReference in $projectReferenceNodes) {
-        Write-Host $projectReference.Include
+        Write-Host "`t" $projectReference.Include
     }
 }
 
@@ -23,9 +23,11 @@ Get-Content $solutionFilePath |
 Select-String 'Project\(' |
 ForEach-Object {
     $projectParts = $_ -Split '[,=]' | ForEach-Object { $_.Trim('[ "{}]') };
-    Write-Host $projectParts[1]
+    Write-Host ''
+    Write-Host $projectParts[1] -ForegroundColor Green
 
     $projectFilePath = $solutionFolderPath + '\' + $projectParts[2]
     
     ProjectDependencies $projectFilePath
 }
+Write-Host ''
