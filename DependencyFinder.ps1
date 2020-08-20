@@ -47,7 +47,7 @@ function SolutionDependencies {
 # MAIN PROGRAM
 
 do {
-    $filePath = Read-Host 'Full path (.sln/.csproj)'
+    $filePath = Read-Host 'File path (.sln/.csproj)'
     $fileExtension = [System.IO.Path]::GetExtension($filePath)
     $isSLN = $fileExtension -eq '.sln'
     $isCSPROJ = $fileExtension -eq '.csproj'
