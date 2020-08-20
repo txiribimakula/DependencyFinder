@@ -13,28 +13,36 @@ function ProjectDependencies {
 
     foreach ($projectReference in $projectReferenceNodes) {
         $projectReferenceValue = $projectReference.Include;
-        if($projectReferenceValue -match $criteria) {
+        if ($projectReferenceValue -match $criteria) {
             Write-Host $projectReference.Include -ForegroundColor Black -BackgroundColor Yellow
-        } else {
+        }
+        else {
             Write-Host $projectReference.Include
         }
     }
 }
 
-$solutionFilePath = Read-Host 'Full path'
+$filePath = Read-Host 'Full path'
 $criteria = Read-Host 'Criteria'
 
-$solutionFolderPath = Split-Path $solutionFilePath
+$fileExtension = [System.IO.Path]::GetExtension($filePath)
 
-Get-Content $solutionFilePath |
-Select-String 'Project\(' |
-ForEach-Object {
-    $projectParts = $_ -Split '[,=]' | ForEach-Object { $_.Trim('[ "{}]') };
-    Write-Host ''
-    Write-Host $projectParts[1] -ForegroundColor Green
+if ($fileExtension -eq '.sln') {
+    $solutionFolderPath = Split-Path $filePath
 
-    $projectFilePath = $solutionFolderPath + '\' + $projectParts[2]
+    Get-Content $filePath |
+    Select-String 'Project\(' |
+    ForEach-Object {
+        $projectParts = $_ -Split '[,=]' | ForEach-Object { $_.Trim('[ "{}]') };
+        Write-Host ''
+        Write-Host $projectParts[1] -ForegroundColor Green
     
-    ProjectDependencies $projectFilePath $criteria
+        $projectFilePath = $solutionFolderPath + '\' + $projectParts[2]
+        
+        ProjectDependencies $projectFilePath $criteria
+    }
+    Write-Host ''
 }
-Write-Host ''
+elseif ($fileExtension -eq '.csproj') {
+    ProjectDependencies $filePath $criteria
+}
