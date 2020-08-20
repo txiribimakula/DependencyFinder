@@ -1,6 +1,7 @@
 function ProjectDependencies {
     param (
-        $projectFilePath
+        $projectFilePath,
+        $criteria
     )
     
     [xml]$projectXml = Get-Content $projectFilePath
@@ -11,11 +12,17 @@ function ProjectDependencies {
     $projectReferenceNodes = $projectXml.SelectNodes('//msb:ProjectReference', $ns)
 
     foreach ($projectReference in $projectReferenceNodes) {
-        Write-Host "`t" $projectReference.Include
+        $projectReferenceValue = $projectReference.Include;
+        if($projectReferenceValue -match $criteria) {
+            Write-Host "`t" $projectReference.Include -ForegroundColor Black -BackgroundColor Yellow
+        } else {
+            Write-Host "`t" $projectReference.Include
+        }
     }
 }
 
 $solutionFilePath = Read-Host 'Full path'
+$criteria = Read-Host 'Criteria'
 
 $solutionFolderPath = Split-Path $solutionFilePath
 
@@ -28,6 +35,6 @@ ForEach-Object {
 
     $projectFilePath = $solutionFolderPath + '\' + $projectParts[2]
     
-    ProjectDependencies $projectFilePath
+    ProjectDependencies $projectFilePath $criteria
 }
 Write-Host ''
