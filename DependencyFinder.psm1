@@ -1,14 +1,8 @@
-function ProjectDependencies {
-    param (
-        $projectFilePath,
-        $criteria
-    )
-    
+function ProjectDependencies ($projectFilePath, $criteria, $nsUri) {
     [xml]$projectXml = Get-Content $projectFilePath
 
     $ns = new-object Xml.XmlNamespaceManager $projectXml.NameTable
-    $ns.AddNamespace("msb", "http://schemas.microsoft.com/developer/msbuild/2003")
-
+    $ns.AddNamespace("msb", $nsUri)
     $projectReferenceNodes = $projectXml.SelectNodes('//msb:ProjectReference', $ns)
 
     foreach ($projectReference in $projectReferenceNodes) {
@@ -22,12 +16,7 @@ function ProjectDependencies {
     }
 }
 
-function SolutionDependencies {
-    param (
-        $solutionFilePath,
-        $criteria
-    )
-    
+function SolutionDependencies ($solutionFilePath, $criteria, $nsUri){
     $solutionFolderPath = Split-Path $solutionFilePath
 
     Get-Content $solutionFilePath |
@@ -39,7 +28,7 @@ function SolutionDependencies {
     
         $projectFilePath = $solutionFolderPath + '\' + $projectParts[2]
         
-        ProjectDependencies $projectFilePath $criteria
+        ProjectDependencies $projectFilePath $criteria $nsUri
     }
     Write-Host ''
 }
